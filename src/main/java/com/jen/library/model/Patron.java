@@ -12,14 +12,14 @@ import lombok.Data;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_email" })
+        @UniqueConstraint(columnNames = {"patron_email" })
 })
 @Data
 public class Patron {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "patron_id")
     private Integer id;
 
     @NotBlank
@@ -28,7 +28,7 @@ public class Patron {
     private String fullName;
 
     @Email(message = "Please enter a valid email address")
-    @Column(name = "user_email")
+    @Column(name = "patron_email")
     private String email;
 
     @NotEmpty(message = "Please enter a valid  address")
