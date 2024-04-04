@@ -60,7 +60,7 @@ public class PatronServiceImpl implements PatronService {
 
         Map<String, Object> response = new HashMap<>();
 
-        response.put("message", "patron added successfully");
+        response.put("message", "patron updated successfully");
         response.put("data", patron);
         return ResponseEntity.ok( response);
     }
