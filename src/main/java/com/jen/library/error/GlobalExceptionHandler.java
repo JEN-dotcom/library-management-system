@@ -8,11 +8,15 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
         @ExceptionHandler(ObjectNotFoundException.class)
-        public ResponseEntity<String> ObjectNotFoundException(ObjectNotFoundException exception) {
+        public ResponseEntity<String> handleObjectNotFoundException(ObjectNotFoundException exception) {
 
                 return ResponseEntity.status(HttpStatus.NOT_FOUND)
                                 .body(exception.getMessage());
@@ -34,6 +38,19 @@ public class GlobalExceptionHandler {
         public ResponseEntity<String> handleExceptions(Exception exception) {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body("There has been an internal server error");
+        }
+
+        @ExceptionHandler(ConstraintViolationException.class)
+        public ResponseEntity<String> handleConstraintViolationException(ConstraintViolationException exception) {
+                StringBuilder errorMessageBuilder = new StringBuilder("Validation errors occurred: ");
+                for (ConstraintViolation<?> violation : exception.getConstraintViolations()) {
+                        errorMessageBuilder.append(violation.getMessage()).append("; ");
+                }
+
+                String errorMessage = errorMessageBuilder.substring(0, errorMessageBuilder.length() - 2);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(errorMessage);
         }
 
         @ExceptionHandler(DataIntegrityViolationException.class)

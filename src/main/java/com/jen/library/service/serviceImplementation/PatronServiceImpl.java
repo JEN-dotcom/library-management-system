@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,7 @@ public class PatronServiceImpl implements PatronService {
 
         response.put("message", "patron added successfully");
         response.put("data", patron);
-        return ResponseEntity.ok( response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Override
