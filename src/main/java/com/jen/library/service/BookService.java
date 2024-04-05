@@ -14,8 +14,10 @@ public interface BookService {
 
     public Book getBookById(long id);
 
-    public ResponseEntity<String> deleteBook(Integer isbn);
+    public ResponseEntity<String> deleteBook(long id);
 
     public ResponseEntity<Map<String, Object>> addBook(Book book);
+    
+    public ResponseEntity<Map<String, Object>> updateBook(long id, Book book);
 
 }

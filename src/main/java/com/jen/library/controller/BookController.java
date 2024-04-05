@@ -1,8 +1,7 @@
 package com.jen.library.controller;
 
 import com.jen.library.model.Book;
-
-import com.jen.library.service.Bookervice;
+import com.jen.library.service.BookService;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,61 +14,36 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/book/v1")
+@RequestMapping("/api/books")
 public class BookController {
 
     @Autowired
     private BookService bookService;
 
-    @PostMapping("/book")
+    @PostMapping
     public ResponseEntity<Map<String, Object>> saveBook(@Valid @RequestBody Book book) {
         return bookService.addBook(book);
     }
 
-    @GetMapping("/book")
+    @GetMapping
     public List<Book> fetchBookList() {
-        return bookService.getAllBook();
+        return bookService.getAllBooks();
     }
 
-    @GetMapping("/book/{id}")
+    @GetMapping("/{id}")
     public Book fetchBookById(@PathVariable long id) {
         return bookService.getBookById(id);
     }
 
-    @GetMapping("/book/author/{author}")
-    public Book fetchBookByAuthor(@PathVariable String author) {
-        return bookService.getBookByAuthor(author);
+    @PutMapping("/{id}")
+    public ResponseEntity<Map<String, Object>> updateBook(@PathVariable("id") long id,
+            @Valid @RequestBody Book book) {
+        return bookService.updateBook(id, book);
     }
 
-    @GetMapping("/book/author/{author}")
-    public Book fetchBookByAuthor(@PathVariable String author) {
-        return bookService.getBookByAuthor(author);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteBook(@PathVariable long id) {
+        return bookService.deleteBook(id);
     }
 
-    @GetMapping("/book/isbn/{isbn}")
-    public Book fetchBookByFullName(@PathVariable long isbn) {
-        return bookService.getBookByISBN(isbn);
-    }
-
-    @GetMapping("/book/title/{title}")
-    public Book fetchBookByTitle(@PathVariable String title) {
-        return bookService.getBookByTitle(title);
-    }
-
-    @GetMapping("/book/title/{title}")
-    public Book fetchBookByTitle(@PathVariable String title) {
-        return bookService.getBookByTitle(title);
-    }
-
-    @DeleteMapping("/book/{isbn}")
-    public ResponseEntity<String> deleteBook(@PathVariable Integer isbn) {
-        return bookService.deleteBook(isbn);
-    }
-
-    @PutMapping("/book/title/{title}/{userEmail}")
-    public ResponseEntity<String> borrowBook(
-            @PathVariable String title,
-            @PathVariable String userEmail) {
-        return bookService.borrowBook(title, userEmail);
-    }
 }

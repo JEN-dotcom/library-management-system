@@ -8,13 +8,17 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.Data;
+
+import lombok.*;
 
 @Entity
-@Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"patron_email" })
-})
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"patron_email" })
+})
 public class Patron {
 
     @Id
@@ -41,5 +45,4 @@ public class Patron {
     @NotEmpty()
     private String contactInformation;
    
-
 }

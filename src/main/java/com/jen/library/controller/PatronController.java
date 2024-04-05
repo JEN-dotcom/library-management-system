@@ -15,34 +15,34 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/patrons")
 public class PatronController {
 
     @Autowired
     private PatronService patronService;
 
-    @PostMapping("/patrons")
+    @PostMapping
     public ResponseEntity<Map<String, Object>> savePatron(@Valid @RequestBody Patron patron) {
         return patronService.addPatron(patron);
     }
 
-    @GetMapping("/patrons")
+    @GetMapping
     public List<Patron> fetchPatronList() {
         return patronService.getAllPatrons();
     }
 
-    @GetMapping("/patrons/{id}")
+    @GetMapping("/{id}")
     public Patron fetchPatronById(@PathVariable("id") Integer id) {
         return patronService.getPatronById(id);
     }
 
-    @PutMapping("/patrons/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updatePatron(@PathVariable("id") Integer id,
             @Valid @RequestBody Patron patron) {
         return patronService.updatePatron(id, patron);
     }
 
-    @DeleteMapping("/patrons/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deletepatron(@PathVariable("id") Integer id) {
         return patronService.deletePatron(id);
     }
