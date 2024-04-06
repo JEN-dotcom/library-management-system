@@ -35,12 +35,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @CacheEvict(value = "allBooks", allEntries = true)
-    public ResponseEntity<Map<String, Object>> addBook(Book Book) {
-        bookRepository.save(Book);
+    public ResponseEntity<Map<String, Object>> addBook(Book book) {
+        book = bookRepository.save(book);
         Map<String, Object> response = new HashMap<>();
 
         response.put("message", "Book added successfully");
-        response.put("data", Book);
+        response.put("data", book);
         return ResponseEntity.ok( response);
     }
 

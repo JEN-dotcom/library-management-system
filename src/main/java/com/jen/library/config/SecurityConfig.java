@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher.*;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 
@@ -43,8 +44,8 @@ public class SecurityConfig {
                                                 .configurationSource(new CorsConfig()))
                                 .authorizeHttpRequests((auth) -> auth
                                                 .requestMatchers(mvc.pattern("/auth/**"), mvc.pattern("/api/v1/admin/create")).permitAll()
-                                                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**"))
-                                                .permitAll()
+                                                .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+                                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
                                                 .requestMatchers(mvc.pattern("/user/**")).hasRole("ADMIN")
                                                 .anyRequest().authenticated())
                                 .headers(headers -> headers.frameOptions(FrameOptionsConfig::disable))

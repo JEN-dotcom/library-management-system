@@ -13,8 +13,7 @@ import lombok.*;
 
 @Entity
 @Table(uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "title", "author" }),
-        @UniqueConstraint(columnNames = { "isbn" })
+        @UniqueConstraint(columnNames = { "title", "author", "isbn" })
 })
 @Data
 @NoArgsConstructor

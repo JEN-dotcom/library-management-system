@@ -12,6 +12,8 @@ import lombok.*;
 @Entity
 @Builder
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class BorrowingRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

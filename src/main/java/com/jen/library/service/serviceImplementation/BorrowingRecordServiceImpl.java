@@ -52,9 +52,9 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
                 .patron(patron)
                 .book(bookToBorrow)
                 .build();
-
+        record = recordRepository.save(record);
         response.put("message", "Book borrowed successfully");
-        response.put("data", recordRepository.save(record));
+        response.put("data", record);
         return ResponseEntity.ok(response);
     }
 
