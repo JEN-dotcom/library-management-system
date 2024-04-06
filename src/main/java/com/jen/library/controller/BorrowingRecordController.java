@@ -1,49 +1,30 @@
 package com.jen.library.controller;
 
-import com.jen.library.model.Book;
-import com.jen.library.service.BookService;
+import com.jen.library.service.BorrowingRecordService;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/books")
-public class BookController {
+@RequestMapping("/api")
+public class BorrowingRecordController {
 
     @Autowired
-    private BookService bookService;
+    private BorrowingRecordService recordService;
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> saveBook(@Valid @RequestBody Book book) {
-        return bookService.addBook(book);
+    @PostMapping("/borrow/{bookId}/patron/{patronId}")
+    public ResponseEntity<Map<String, Object>> borrowBook(@PathVariable long bookId, @PathVariable Integer patronId) {
+        return recordService.borrowBook(bookId, patronId);
     }
 
-    @GetMapping
-    public List<Book> fetchBookList() {
-        return bookService.getAllBooks();
+    @PutMapping("/return/{bookId}/patron/{patronId}")
+    public ResponseEntity<String> returnBook(@PathVariable long bookId, @PathVariable Integer patronId) {
+        return recordService.returnBook(bookId, patronId);
     }
-
-    @GetMapping("/{id}")
-    public Book fetchBookById(@PathVariable long id) {
-        return bookService.getBookById(id);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> updateBook(@PathVariable("id") long id,
-            @Valid @RequestBody Book book) {
-        return bookService.updateBook(id, book);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable long id) {
-        return bookService.deleteBook(id);
-    }
-
+    
 }

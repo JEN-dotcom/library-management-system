@@ -2,6 +2,8 @@ package com.jen.library.service.serviceImplementation;
 
 import com.jen.library.service.BookService;
 
+import jakarta.transaction.Transactional;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ public class BookServiceImpl implements BookService {
         return ResponseEntity.ok("Book successfully deleted");
     }
 
+    @Transactional
     @Override
     @CacheEvict(value = { "getBookById" }, key = "#id")
     public ResponseEntity<Map<String, Object>> updateBook(long id, Book bookToUpdate) {

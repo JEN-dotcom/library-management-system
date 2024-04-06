@@ -13,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.jen.library.model.Patron;
 import com.jen.library.service.PatronService;
+
+import jakarta.transaction.Transactional;
+
 import com.jen.library.error.ObjectNotFoundException;
 
 import com.jen.library.repository.PatronRepository;
@@ -47,6 +50,7 @@ public class PatronServiceImpl implements PatronService {
         return patronRepository.findById(id).orElseThrow(() -> new ObjectNotFoundException("patron not found"));
     }
 
+    @Transactional
     @Override
     @CacheEvict(value = { "getPatronById" }, key = "#id")
     public ResponseEntity<Map<String, Object>> updatePatron(Integer id, Patron patronToUpdate) {
@@ -57,12 +61,10 @@ public class PatronServiceImpl implements PatronService {
         patron.setAge(patronToUpdate.getAge());
         patron.setEmail(patronToUpdate.getEmail());
 
-        patronRepository.save(patron);
-
         Map<String, Object> response = new HashMap<>();
 
         response.put("message", "patron updated successfully");
-        response.put("data", patron);
+        response.put("data", patronRepository.save(patron));
         return ResponseEntity.ok( response);
     }
 

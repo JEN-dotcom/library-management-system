@@ -1,6 +1,5 @@
 package com.jen.library.repository;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,7 +25,7 @@ class PatronRepositoryTest {
 
     // @BeforeEach
     // void setUp() {
-      
+
     // }
 
     @Test
@@ -34,15 +33,14 @@ class PatronRepositoryTest {
         Patron patron = Patron.builder()
                 .fullName("John Doe")
                 .age(50)
-        
+
                 .address("Dubai")
                 .email("jdoe@example.com")
                 .contactInformation("Uae")
                 .build();
 
-   patron=     entityManager.persistAndFlush(patron);
-        
-        
+        patron = entityManager.persistAndFlush(patron);
+
         Patron patronfound = patronRepository.findById(patron.getId()).get();
         assertEquals(patronfound.getAge(), patron.getAge());
     }
