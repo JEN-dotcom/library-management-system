@@ -11,7 +11,7 @@ import lombok.*;
 
 @Entity
 @Builder
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BorrowingRecord {
