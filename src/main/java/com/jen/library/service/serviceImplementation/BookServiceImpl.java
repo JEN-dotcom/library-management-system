@@ -69,7 +69,7 @@ public class BookServiceImpl implements BookService {
         book.setTitle(bookToUpdate.getTitle());
         Map<String, Object> response = new HashMap<>();
 
-        response.put("message", "book updated successfully");
+        response.put("message", "Book updated successfully");
         response.put("data", bookRepository.save(book));
         return ResponseEntity.ok( response);
     }
