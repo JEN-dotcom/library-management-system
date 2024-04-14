@@ -27,100 +27,99 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.jen.library.error.GlobalExceptionHandler;
 import com.jen.library.error.ObjectNotFoundException;
-import com.jen.library.model.Patron;
-import com.jen.library.service.PatronService;
+import com.jen.library.model.Book;
+import com.jen.library.service.BookService;
 
 @ExtendWith(MockitoExtension.class)
-class PatronControllerTest {
+class BookControllerTest {
 
         @Autowired
         private MockMvc mockMvc;
 
         @Mock
-        private PatronService patronService;
+        private BookService bookService;
 
         @InjectMocks
-        private PatronController patronController;
+        private BookController bookController;
 
         @BeforeEach
         void setUp() {
-                mockMvc = MockMvcBuilders.standaloneSetup(patronController)
+                mockMvc = MockMvcBuilders.standaloneSetup(bookController)
                                 .setControllerAdvice(new GlobalExceptionHandler())
-
                                 .build();
         }
 
         @Test
-        void savePatron_InvalidPatron_ReturnsBadRequest() throws Exception {
+        void saveBook_InvalidBook_ReturnsBadRequest() throws Exception {
 
-                String requestBody = "{\"fullName\": \"John\", \"email\": \"invalidemail\", \"address\": \"123 Main St\", \"age\": 15, \"contactInformation\": \"123456\"}";
+                String requestBody = "{\"title\": \"Java\", \"author\": \"John E\", \"publicationYear\": 1000, \"isbn\": 15}";
 
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/patrons")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/books")
                                 .content(requestBody)
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
         }
 
         @Test
-        void savePatron_ValidPatron_ReturnsStatusCreated() throws Exception {
+        void saveBook_ValidBook_ReturnsStatusCreated() throws Exception {
 
-                String requestBody = "{\"fullName\": \"John Doe\", \"email\": \"johndoe@example.com\", \"address\": \"123 Main St\", \"age\": 25, \"contactInformation\": \"123456\"}";
+                String requestBody = "{\"title\": \"Java\", \"author\": \"John E\", \"publicationYear\": 1500, \"isbn\": 15}";
 
-                when(patronService.addPatron(any(Patron.class)))
+                when(bookService.addBook(any(Book.class)))
                                 .thenReturn(new ResponseEntity<>(HttpStatus.CREATED));
 
-                mockMvc.perform(MockMvcRequestBuilders.post("/api/patrons")
+                mockMvc.perform(MockMvcRequestBuilders.post("/api/books")
                                 .content(requestBody)
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(MockMvcResultMatchers.status().isCreated());
         }
 
         @Test
-        void fetchPatronList_ReturnsListOfPatrons() throws Exception {
+        void fetchBookList_ReturnsListOfBooks() throws Exception {
 
-                Patron patron1 = new Patron();
-                patron1.setId(1);
-                patron1.setFullName("John Doe");
+                Book book1 = new Book();
+                book1.setId(1);
+                book1.setAuthor("John Doe");
 
-                Patron patron2 = new Patron();
-                patron2.setId(2);
-                patron2.setFullName("Jane Doe");
+                Book book2 = new Book();
+                book2.setId(2);
+                book2.setAuthor("Jane Doe");
 
-                List<Patron> patronList = Arrays.asList(patron1, patron2);
+                List<Book> BookList = Arrays.asList(book1, book2);
 
-                when(patronService.getAllPatrons()).thenReturn(patronList);
+                when(bookService.getAllBooks()).thenReturn(BookList);
 
-                mockMvc.perform(MockMvcRequestBuilders.get("/api/patrons")
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/books")
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(MockMvcResultMatchers.status().isOk())
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].fullName").value("John Doe"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].fullName").value("Jane Doe"));
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].author").value("John Doe"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].author").value("Jane Doe"));
         }
 
         @Test
-        void fetchPatronById_ReturnsPatron() throws Exception {
+        void fetchBookById_ReturnsBook() throws Exception {
 
-                int patronId = 1;
-                Patron expectedPatron = new Patron();
-                expectedPatron.setId(patronId);
-                expectedPatron.setFullName("John Doe");
+                int bookId = 1;
+                Book expectedBook = new Book();
+                expectedBook.setId(bookId);
+                expectedBook.setAuthor("John Doe");
 
-                when(patronService.getPatronById(patronId)).thenReturn(expectedPatron);
+                when(bookService.getBookById(bookId)).thenReturn(expectedBook);
 
-                mockMvc.perform(MockMvcRequestBuilders.get("/api/patrons/{id}", patronId))
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/books/{id}", bookId))
                                 .andExpect(MockMvcResultMatchers.status().isOk())
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(patronId))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.fullName").value("John Doe"));
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(bookId))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.author").value("John Doe"));
         }
 
         @Test
-        void fetchPatronById_ReturnsNotFound() throws Exception {
+        void fetchBookById_ReturnsNotFound() throws Exception {
 
-                int patronId = 100;
-                when(patronService.getPatronById(patronId)).thenThrow(new ObjectNotFoundException("nn"));
+                int bookId = 100;
+                when(bookService.getBookById(bookId)).thenThrow(new ObjectNotFoundException("Book not found"));
 
-                assertThrows(ObjectNotFoundException.class, () -> patronService.getPatronById(patronId));
-                mockMvc.perform(MockMvcRequestBuilders.get("/api/patrons/{id}", patronId)
+                assertThrows(ObjectNotFoundException.class, () -> bookService.getBookById(bookId));
+                mockMvc.perform(MockMvcRequestBuilders.get("/api/books/{id}", bookId)
                                 .contentType(MediaType.APPLICATION_JSON))
                                 .andExpect(result -> assertTrue(
                                                 result.getResolvedException() instanceof ObjectNotFoundException))
@@ -129,41 +128,40 @@ class PatronControllerTest {
         }
 
         @Test
-        void updatePatron_ValidPatron_ReturnsUpdatedPatron() throws Exception {
+        void updateBook_ValidBook_ReturnsUpdatedBook() throws Exception {
 
-                int patronId = 1;
-                Patron updatedPatron = new Patron();
-                updatedPatron.setId(patronId);
-                updatedPatron.setFullName("Updated Name");
-                updatedPatron.setEmail("updated@example.com");
+                long bookId = 1;
+                Book updatedBook = new Book();
+                updatedBook.setId(bookId);
+                updatedBook.setAuthor("Updated Name");
+                updatedBook.setPublicationYear(1500);
 
                 Map<String, Object> response = new HashMap<>();
-                response.put("message", "Patron updated successfully");
-                response.put("data", updatedPatron);
+                response.put("message", "Book updated successfully");
+                response.put("data", updatedBook);
                 ResponseEntity<Map<String, Object>> desiredResponse = ResponseEntity.ok().body(response);
-                when(patronService.updatePatron(any(Integer.class), any(Patron.class))).thenReturn(desiredResponse);
+                when(bookService.updateBook(any(Long.class), any(Book.class))).thenReturn(desiredResponse);
 
-                mockMvc.perform(MockMvcRequestBuilders.put("/api/patrons/{id}", patronId)
+                mockMvc.perform(MockMvcRequestBuilders.put("/api/books/{id}", bookId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(
-                                                "{\"id\": 1, \"fullName\": \"Updated Name\", \"email\": \"updated@example.com\", \"address\": \"Updated Address\", \"age\": 30, \"contactInformation\": \"Updated Contact Info\"}"))
-                                .andExpect(MockMvcResultMatchers.status().isOk())
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
-                                                .value("Patron updated successfully"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.fullName").value("Updated Name"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.email").value("updated@example.com"));
+                                        "{\"title\": \"Java\", \"author\": \"John E\", \"publicationYear\": 1500, \"isbn\": 15}"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Book updated successfully"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.author").value("Updated Name"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.data.publicationYear").value(1500))
+                                .andExpect(MockMvcResultMatchers.status().isOk());
         }
 
         @Test
-        void deletePatron_ValidPatron_ReturnsDeletedMessage() throws Exception {
+        void deleteBook_ValidBook_ReturnsDeletedMessage() throws Exception {
 
-                int patronId = 1;
-                String deleteMessage = "Patron deleted successfully";
+                int BookId = 1;
+                String deleteMessage = "Book deleted successfully";
 
                 ResponseEntity<String> responseEntity = ResponseEntity.ok(deleteMessage);
-                when(patronService.deletePatron(patronId)).thenReturn(responseEntity);
+                when(bookService.deleteBook(BookId)).thenReturn(responseEntity);
 
-                mockMvc.perform(MockMvcRequestBuilders.delete("/api/patrons/{id}", patronId))
+                mockMvc.perform(MockMvcRequestBuilders.delete("/api/books/{id}", BookId))
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.content().string(deleteMessage));
         }
